@@ -21,14 +21,12 @@ public:
                 st.push(asteroids[i]);
                 continue;
             }
-            if(!st.empty() && (asteroids[i]+st.top())==0){
-                cout<<"3"<<endl;
-                st.pop();
-                continue;
-            }
+            // if(!st.empty() && (asteroids[i]+st.top())==0){
+            //     st.pop();
+            //     continue;
+            // }
             if(asteroids[i]<0){
                 while(!st.empty() && st.top()>0 && st.top()<abs(asteroids[i])){
-                    cout<<"1"<<endl;
                     st.pop();
                 }
                 if(!st.empty() && st.top()+asteroids[i] == 0){
