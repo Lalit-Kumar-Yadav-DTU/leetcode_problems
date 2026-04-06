@@ -6,7 +6,7 @@ public:
         vector<int>v(256, 0);
         while(j<n){
             v[s[j]]++;
-            while(i<j && v[s[j]]>1){
+            while(v[s[j]]>1){
                 v[s[i]]--;
                 i++;
             }
