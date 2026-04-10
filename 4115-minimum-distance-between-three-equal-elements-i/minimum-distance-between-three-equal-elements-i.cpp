@@ -12,11 +12,11 @@ public:
             vector<int>&v = itr.second;
             if(v.size()<3) continue;
             for(int i=0; i+2<v.size(); i++){
-                int dist = (v[i+2] - v[i]);  //optimized formula 2 * (v[i+2] - v[i])
+                int dist = abs(v[i]-v[i+1]) + abs(v[i+1]-v[i+2]) + abs(v[i+2]-v[i]);  //optimized formula 2 * (v[i+2] - v[i])
                 minDist = min(minDist,dist);
             }
         }
         if(minDist==INT_MAX) return -1;
-        return minDist*2;
+        return minDist;
     }
 };
