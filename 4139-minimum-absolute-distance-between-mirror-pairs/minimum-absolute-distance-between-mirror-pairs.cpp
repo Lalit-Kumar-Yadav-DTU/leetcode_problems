@@ -1,4 +1,12 @@
 class Solution {
+    int reverseNum(int x){
+        int y = 0;
+        while(x>0){
+            y = y*10 + x%10;
+            x /= 10;
+        }
+        return y;
+    }
 public:
     int minMirrorPairDistance(vector<int>& nums) {
         int n = nums.size();
@@ -8,9 +16,7 @@ public:
             if(mp.find(nums[i]) != mp.end()){
                 minDist = min(minDist, i-mp[nums[i]]);
             }
-            string str = to_string(nums[i]);
-            reverse(str.begin(), str.end());
-            mp[stoi(str)] = i;
+            mp[reverseNum(nums[i])] = i;
         }
         return minDist==INT_MAX ? -1: minDist;
     }
