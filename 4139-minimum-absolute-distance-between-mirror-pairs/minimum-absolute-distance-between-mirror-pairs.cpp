@@ -1,6 +1,7 @@
 class Solution {
-    int reverseNum(int x){
-        int y = 0;
+    int reverseNum(int x){  //123
+        int y = x%10;
+        x /= 10;
         while(x>0){
             y = y*10 + x%10;
             x /= 10;
