@@ -1,11 +1,11 @@
 class Solution {
-    int reverseNum(int n){
-        int y = 0;
-        while(n>0){
-            y = y*10 + n%10;
-            n /= 10;
+    int reverseNum(int x){
+        int revOfx = 0;
+        while(x>0){
+            revOfx = revOfx*10 + x%10;
+            x /= 10;
         }
-        return y;
+        return revOfx;
     }
 public:
     int mirrorDistance(int n) {
