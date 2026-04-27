@@ -1,82 +1,79 @@
 class LRUCache {
 public:
-// Doubly linked list node class
     class Node {
     public:
         int key;
         int val;
-        Node* next;
-        Node* prev;
-        // Constructor to initialize node
-        Node(int _key, int _val) {
-            key = _key;
-            val = _val;
+        Node *next;
+        Node *prev;
+        Node(int k, int v){
+            key = k;
+            val = v;
         }
     };
-
-    // Head and tail dummy nodes
-    Node* head = new Node(-1, -1);
-    Node* tail = new Node(-1, -1);
-
-    // Capacity of cache
+    Node *dummyHead = new Node(-1,-1);
+    Node *dummyTail = new Node(-1,-1);
     int cap;
-    // Hash map to store key-node mapping
-    unordered_map<int, Node*> m;
+    unordered_map<int,Node*>mp;
+
     LRUCache(int capacity) {
         cap = capacity;
-        head->next = tail;
-        tail->prev = head;
+        dummyHead->next = dummyTail;
+        dummyTail->prev = dummyHead;
     }
-     // Function to add a node right after head
-    void addNode(Node* newNode) {
-        Node* temp = head->next;
+
+    void insertAfterHead(Node *newNode){
+        Node *temp = dummyHead->next;
         newNode->next = temp;
-        newNode->prev = head;
-        head->next = newNode;
+        dummyHead->next = newNode;
+        newNode->prev = dummyHead;
         temp->prev = newNode;
     }
 
-    // Function to remove a given node from list
-    void deleteNode(Node* delNode) {
-        Node* delPrev = delNode->prev;
-        Node* delNext = delNode->next;
-        delPrev->next = delNext;
-        delNext->prev = delPrev;
+    void removeNode(Node *delNode){
+        Node *delNodePrev = delNode->prev;
+        Node *delNodeNext = delNode->next;
+        delNodePrev->next = delNodeNext;
+        delNodeNext->prev = delNodePrev;
+        // if(delNode == NULL) return ;
+        // delNode->next->prev = delNode->prev;
+        // delNode->prev->next = delNode->next;
+        // delNode->next = NULL;
+        // delNode->prev = NULL;
     }
     
     int get(int key) {
-        // If key exists in cache
-        if (m.find(key) != m.end()) {
-            Node* resNode = m[key];
-            int res = resNode->val;
-            // Remove old mapping
-            m.erase(key);
-            // Move accessed node to front
-            deleteNode(resNode);
-            addNode(resNode);
-            // Update map
-            m[key] = head->next;
-            return res;
+        if(mp.find(key) == mp.end()){
+            return -1;
         }
-        // If not found
-        return -1;
+        Node *tempNode = mp[key];
+        int res = tempNode->val;
+        mp.erase(key);
+        removeNode(tempNode);
+        insertAfterHead(tempNode);
+        mp[key] = dummyHead->next;
+        return res;
     }
     
     void put(int key, int value) {
-        // If key already exists
-        if (m.find(key) != m.end()) {
-            Node* existingNode = m[key];
-            m.erase(key);
-            deleteNode(existingNode);
+        if(mp.find(key) != mp.end()){
+            Node *tempNode = mp[key];
+            mp.erase(key);
+            removeNode(tempNode);
+            insertAfterHead(new Node(key,value));
+            mp[key] = dummyHead->next;
+            return ;
         }
-        // If capacity reached
-        if (m.size() == cap) {
-            m.erase(tail->prev->key);
-            deleteNode(tail->prev);
+        if(mp.size()<cap){
+            insertAfterHead(new Node(key, value));
+            mp[key] = dummyHead->next;
         }
-        // Insert new node at front
-        addNode(new Node(key, value));
-        m[key] = head->next;
+        else{
+            mp.erase(dummyTail->prev->key);
+            removeNode(dummyTail->prev);
+            insertAfterHead(new Node(key,value));
+            mp[key] = dummyHead->next;
+        }
     }
 };
 
