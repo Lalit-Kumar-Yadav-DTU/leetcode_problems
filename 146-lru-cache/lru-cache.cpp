@@ -1,48 +1,82 @@
 class LRUCache {
 public:
-    int cap;
-    
-    // DLL → stores {key, value}
-    list<pair<int,int>> l;
-    
-    // key → iterator in list
-    unordered_map<int, list<pair<int,int>>::iterator> mp;
+// Doubly linked list node class
+    class Node {
+    public:
+        int key;
+        int val;
+        Node* next;
+        Node* prev;
+        // Constructor to initialize node
+        Node(int _key, int _val) {
+            key = _key;
+            val = _val;
+        }
+    };
 
+    // Head and tail dummy nodes
+    Node* head = new Node(-1, -1);
+    Node* tail = new Node(-1, -1);
+
+    // Capacity of cache
+    int cap;
+    // Hash map to store key-node mapping
+    unordered_map<int, Node*> m;
     LRUCache(int capacity) {
         cap = capacity;
+        head->next = tail;
+        tail->prev = head;
+    }
+     // Function to add a node right after head
+    void addNode(Node* newNode) {
+        Node* temp = head->next;
+        newNode->next = temp;
+        newNode->prev = head;
+        head->next = newNode;
+        temp->prev = newNode;
+    }
+
+    // Function to remove a given node from list
+    void deleteNode(Node* delNode) {
+        Node* delPrev = delNode->prev;
+        Node* delNext = delNode->next;
+        delPrev->next = delNext;
+        delNext->prev = delPrev;
     }
     
     int get(int key) {
-        // not found
-        if (mp.find(key) == mp.end()) return -1;
-
-        // move node to front (most recently used)
-        l.splice(l.begin(), l, mp[key]);
-
-        return mp[key]->second;
+        // If key exists in cache
+        if (m.find(key) != m.end()) {
+            Node* resNode = m[key];
+            int res = resNode->val;
+            // Remove old mapping
+            m.erase(key);
+            // Move accessed node to front
+            deleteNode(resNode);
+            addNode(resNode);
+            // Update map
+            m[key] = head->next;
+            return res;
+        }
+        // If not found
+        return -1;
     }
     
     void put(int key, int value) {
-        // if key exists
-        if (mp.find(key) != mp.end()) {
-            // update value
-            mp[key]->second = value;
-
-            // move to front
-            l.splice(l.begin(), l, mp[key]);
-        } 
-        else {
-            // if capacity full → remove LRU (back)
-            if (l.size() == cap) {
-                auto last = l.back();   // {key, value}
-                mp.erase(last.first);
-                l.pop_back();
-            }
-
-            // insert new node at front
-            l.push_front({key, value});
-            mp[key] = l.begin();
+        // If key already exists
+        if (m.find(key) != m.end()) {
+            Node* existingNode = m[key];
+            m.erase(key);
+            deleteNode(existingNode);
         }
+        // If capacity reached
+        if (m.size() == cap) {
+            m.erase(tail->prev->key);
+            deleteNode(tail->prev);
+        }
+        // Insert new node at front
+        addNode(new Node(key, value));
+        m[key] = head->next;
     }
 };
 
