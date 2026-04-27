@@ -31,15 +31,15 @@ public:
     }
 
     void removeNode(Node *delNode){
-        Node *delNodePrev = delNode->prev;
-        Node *delNodeNext = delNode->next;
-        delNodePrev->next = delNodeNext;
-        delNodeNext->prev = delNodePrev;
+        // Node *delNodePrev = delNode->prev;
+        // Node *delNodeNext = delNode->next;
+        // delNodePrev->next = delNodeNext;
+        // delNodeNext->prev = delNodePrev;
         // if(delNode == NULL) return ;
-        // delNode->next->prev = delNode->prev;
-        // delNode->prev->next = delNode->next;
-        // delNode->next = NULL;
-        // delNode->prev = NULL;
+        delNode->next->prev = delNode->prev;
+        delNode->prev->next = delNode->next;
+        delNode->next = NULL;
+        delNode->prev = NULL;
     }
     
     int get(int key) {
