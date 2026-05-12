@@ -15,8 +15,8 @@ public:
                 ans = {i, i + 1};
             }
         }
-        int dif = 2;
-        for (int diff = dif; diff < n; ++diff) {
+        
+        for (int diff = 2; diff < n; ++diff) {
             for (int i = 0; i < n - diff; ++i) {
                 int j = i + diff;
                 if (s[i] == s[j] && dp[i + 1][j - 1]) {
