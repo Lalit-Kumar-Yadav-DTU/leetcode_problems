@@ -2,28 +2,21 @@ class Solution {
 public:
     bool canReach(vector<int>& arr, int start) {
         int n = arr.size();
-        vector<vector<int>>adj (n);
         vector<bool>vis(n, false);
-        for(int i=0; i<n; i++){
-            if(i+arr[i] < n){
-                adj[i].push_back(i+arr[i]);
-            }
-            if(i-arr[i] >= 0){
-                adj[i].push_back(i-arr[i]);
-            }
-        }
         queue<int>q;
         q.push(start);
         vis[start] = true;
         while(!q.empty()){
-            int nodeInd = q.front();
+            int i = q.front();
             q.pop();
-            for(auto neigh: adj[nodeInd]){
-                if(arr[neigh] == 0) return true;
-                if(!vis[neigh]){
-                    q.push(neigh);
-                    vis[neigh] = true;
-                }
+            if(arr[i] == 0) return true;
+            if(i+arr[i] < n && !vis[i+arr[i]]){
+                q.push(i+arr[i]);
+                vis[i+arr[i]] = true;
+            }
+            if(i-arr[i] >= 0 && !vis[i-arr[i]]){
+                q.push(i-arr[i]);
+                vis[i-arr[i]] = true;
             }
         }
         return false;
